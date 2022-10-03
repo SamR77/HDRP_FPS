@@ -17,11 +17,13 @@ public class FirstPersonController_Sam : MonoBehaviour
     [SerializeField] private bool canCrouch = true;
     [SerializeField] private bool canUseHeadbob = true;
     [SerializeField] private bool canSlideOnSlopes = true;
+    [SerializeField] private bool canZoom = true;
 
     [Header("Controls")]
     [SerializeField] private KeyCode runKey = KeyCode.LeftShift;
     [SerializeField] private KeyCode jumpKey = KeyCode.Space;
     [SerializeField] private KeyCode crouchKey = KeyCode.LeftControl;
+    [SerializeField] private KeyCode zoomKey = KeyCode.Mouse1;
 
     [Header("Move Settings")]
     [SerializeField] private float walkSpeed = 5.0f;
@@ -43,7 +45,7 @@ public class FirstPersonController_Sam : MonoBehaviour
     [SerializeField] private float crouchHeight = 0.5f;
     [SerializeField] private float standingHeight = 1.8f;
     [SerializeField] private float timeToCrouch = 0.15f;
-    [SerializeField] private Vector3 crouchingCenter = new Vector3(0,0.5f,0);
+    [SerializeField] private Vector3 crouchingCenter = new Vector3(0, 0.5f, 0);
     [SerializeField] private Vector3 standingCenter = new Vector3(0, 0, 0);
     private bool isCrouching;
     private bool duringCrouchAnimation;
@@ -58,14 +60,18 @@ public class FirstPersonController_Sam : MonoBehaviour
     private float defaultYPos = 0;
     private float timer;
 
+    [Header("Zoom Settings")]
+    [SerializeField] private float timeToZoom = 0.2f;
+    [SerializeField] private float zoomFOV = 30f;
+    private float defaultFOV;
+    private Coroutine zoomRoutine;
+
     // Sliding Settings
     private Vector3 hitPointNormal;
     private bool isSliding
     {
         get
         {
-            //Debug.DrawRay(transform.position, Vector3.down, Color.red);
-
             if (characterController.isGrounded && Physics.Raycast(transform.position, Vector3.down, out RaycastHit slopeHit, 5.0f))
             {
                 hitPointNormal = slopeHit.normal;
@@ -79,24 +85,9 @@ public class FirstPersonController_Sam : MonoBehaviour
                 {
                     canJump = true;
                 }
-
-
-
-
                 return Vector3.Angle(hitPointNormal, Vector3.up) > characterController.slopeLimit;
-
-                
-
-
             }
-            
             else { return false; }
-
-            
-
-
-
-
         }
     }
 
@@ -113,6 +104,7 @@ public class FirstPersonController_Sam : MonoBehaviour
         playerCamera = GetComponentInChildren<Camera>();
         characterController = GetComponent<CharacterController>();
         defaultYPos = playerCamera.transform.localPosition.y;
+        defaultFOV = playerCamera.fieldOfView;
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -125,30 +117,31 @@ public class FirstPersonController_Sam : MonoBehaviour
             HandleMovementInput();
             HandleMouseLook(); // look into moving into Lateupdate if motion is jittery
 
-            if(canJump) { HandleJump(); }
-            if(canCrouch) { HandleCrouch();  }
-            if(canUseHeadbob) { HandleHeadBob(); }
+            if (canJump) { HandleJump(); }
+            if (canCrouch) { HandleCrouch(); }
+            if (canUseHeadbob) { HandleHeadBob(); }
+            if (canZoom) { HandleZoom(); }
 
-            ApplyFinalMovement();           
-        }        
+            ApplyFinalMovement();
+        }
     }
 
     private void LateUpdate()
     {
-        
+
     }
 
     private void HandleMovementInput()
     {
         // Read inputs
         currentInput = new Vector2(Input.GetAxisRaw("Vertical"), Input.GetAxis("Horizontal"));
-        
+
         // normalizes input when 2 directions are pressed at the same time
         // TODO; find a more elegant solution to normalize, this is a bit of a hack method to normalize it estimates and is not 100% accurate.
         currentInput *= (currentInput.x != 0.0f && currentInput.y != 0.0f) ? 0.7071f : 1.0f;
 
         // Sets the required speed multiplier
-        currentInput *= (isCrouching ? crouchSpeed : isRunning ? runSpeed :  walkSpeed);        
+        currentInput *= (isCrouching ? crouchSpeed : isRunning ? runSpeed : walkSpeed);
 
         float moveDirectionY = moveDirection.y;
         moveDirection = (transform.TransformDirection(Vector3.forward) * currentInput.x) + (transform.TransformDirection(Vector3.right) * currentInput.y);
@@ -164,7 +157,7 @@ public class FirstPersonController_Sam : MonoBehaviour
 
 
         // Rotate player left/right
-        transform.rotation *= Quaternion.Euler(0, Input.GetAxis("Mouse X") * lookSpeedX, 0);        
+        transform.rotation *= Quaternion.Euler(0, Input.GetAxis("Mouse X") * lookSpeedX, 0);
 
     }
 
@@ -198,8 +191,30 @@ public class FirstPersonController_Sam : MonoBehaviour
         }
     }
 
+    private void HandleZoom()
+    {
+        if (Input.GetKeyDown(zoomKey))
+        {
+            if (zoomRoutine != null)
+            {
+                StopCoroutine(zoomRoutine);
+                zoomRoutine = null;
+            }
+            zoomRoutine = StartCoroutine(ToggleZoom(true));
+        }
 
-    private void ApplyFinalMovement()
+        if (Input.GetKeyUp(zoomKey))
+        {
+            if (zoomRoutine != null)
+            {
+                StopCoroutine(zoomRoutine);
+                zoomRoutine = null;
+            }
+            zoomRoutine = StartCoroutine(ToggleZoom(false));
+        }
+    }
+
+private void ApplyFinalMovement()
     {
         // Apply gravity if the character controller is not grounded
         if (!characterController.isGrounded)
@@ -247,6 +262,22 @@ public class FirstPersonController_Sam : MonoBehaviour
         isCrouching = !isCrouching;
 
         duringCrouchAnimation = false;
+    }
+
+    private IEnumerator ToggleZoom(bool isEnter)
+    {
+        float targetFOV = isEnter ? zoomFOV : defaultFOV;
+        float startingFOV = playerCamera.fieldOfView; // capture reference to current FOV
+        float timeElapsed = 0;
+
+        while (timeElapsed < timeToZoom)
+        {
+            playerCamera.fieldOfView = Mathf.Lerp(startingFOV, targetFOV, timeElapsed / timeToZoom);
+            timeElapsed += Time.deltaTime;
+            yield return null;
+        }
+        playerCamera.fieldOfView = targetFOV;
+        zoomRoutine = null;
     }
 
 

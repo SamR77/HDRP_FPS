@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028352, g: 0.22571376, b: 0.3069224, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -4791,7 +4791,7 @@ MonoBehaviour:
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
-  m_SelectedVertices: 03000000060000003300000036000000
+  m_SelectedVertices: 
 --- !u!43 &1195941484
 Mesh:
   m_ObjectHideFlags: 0
@@ -6316,12 +6316,16 @@ MonoBehaviour:
   canJump: 1
   canCrouch: 1
   canUseHeadbob: 1
+  canSlideOnSlopes: 1
+  canZoom: 1
   runKey: 304
   jumpKey: 32
   crouchKey: 306
+  zoomKey: 324
   walkSpeed: 5
   runSpeed: 10
   crouchSpeed: 2.5
+  slopeSpeeed: 8
   lookSpeedX: 2
   lookSpeedY: 2
   upperLookLimit: 70
@@ -6334,11 +6338,13 @@ MonoBehaviour:
   crouchingCenter: {x: 0, y: 0.5, z: 0}
   standingCenter: {x: 0, y: 0, z: 0}
   crouchBobSpeed: 8
-  crouchBobAmount: 0.025
-  walkBobSpeed: 14
-  walkBobAmount: 0.05
-  runBobSpeed: 18
+  crouchBobAmount: 0.05
+  walkBobSpeed: 12
+  walkBobAmount: 0.065
+  runBobSpeed: 16
   runBobAmount: 0.1
+  timeToZoom: 0.2
+  zoomFOV: 30
 --- !u!143 &1740835832
 CharacterController:
   m_ObjectHideFlags: 0
