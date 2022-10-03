@@ -21,6 +21,7 @@ public class FirstPersonController_Sam : MonoBehaviour
     [SerializeField] private bool canSlideOnSlopes = true;
     [SerializeField] private bool canZoom = true;
     [SerializeField] private bool canInteract = true;
+    [SerializeField] private bool useFootsteps = true;
 
     [Header("Controls")]
     [SerializeField] private KeyCode runKey = KeyCode.LeftShift;
@@ -70,6 +71,17 @@ public class FirstPersonController_Sam : MonoBehaviour
     private float defaultFOV;
     private Coroutine zoomRoutine;
 
+    [Header("Footstep Settings")]
+    [SerializeField] private float baseStepSpeed = 0.5f;
+    [SerializeField] private float crouchStepMultiplier = 1.5f;
+    [SerializeField] private float RunStepMultiplier = 0.6f;
+    [SerializeField] private AudioSource footstepAudioSource = default;
+    [SerializeField] private AudioClip[] woodFootstepClips = default;
+    [SerializeField] private AudioClip[] metalFootstepClips = default;
+    [SerializeField] private AudioClip[] grassFootstepClips = default;
+    private float footstepTimer = 0f;
+    private float GetCurrentOffset => isCrouching ? baseStepSpeed * crouchStepMultiplier : isRunning ? baseStepSpeed * RunStepMultiplier : baseStepSpeed;
+
     // Sliding Settings
     private Vector3 hitPointNormal;
     private bool isSliding
@@ -107,7 +119,7 @@ public class FirstPersonController_Sam : MonoBehaviour
     private CharacterController characterController;
 
     private Vector3 moveDirection;
-    private Vector3 currentInput;
+    private Vector2 currentInput;
 
     private float rotationX = 0;
 
@@ -130,11 +142,12 @@ public class FirstPersonController_Sam : MonoBehaviour
             HandleMovementInput();
             HandleMouseLook(); // look into moving into Lateupdate if motion is jittery
 
-            if (canJump)        { HandleJump();     }
-            if (canCrouch)      { HandleCrouch();   }
-            if (canUseHeadbob)  { HandleHeadBob();  }
-            if (canZoom)        { HandleZoom();     }
-            if (canInteract)    { HandleInteractionCheck(); HandleInteractionInput(); }
+            if (canJump)        { HandleJump();                                         }
+            if (canCrouch)      { HandleCrouch();                                       }
+            if (canUseHeadbob)  { HandleHeadBob();                                      }
+            if (canZoom)        { HandleZoom();                                         }
+            if (canInteract)    { HandleInteractionCheck(); HandleInteractionInput();   }
+            if (useFootsteps)   { HandleFootsteps();                                    }
 
             ApplyFinalMovement();
         }
@@ -257,6 +270,44 @@ public class FirstPersonController_Sam : MonoBehaviour
         }
     }
 
+    private void HandleFootsteps()
+    {
+        if (!characterController.isGrounded) return;
+        if (currentInput == Vector2.zero) return;
+
+        footstepTimer -= Time.deltaTime;
+
+        
+
+        if (footstepTimer <= 0)
+        {
+            if (Physics.Raycast(this.transform.position, Vector3.down, out RaycastHit hit, 3))
+            {
+                Debug.Log(hit.collider.tag);
+
+
+                switch (hit.collider.tag)
+                {
+                    case "Footsteps/Wood":
+                        footstepAudioSource.PlayOneShot(woodFootstepClips[Random.Range(0, woodFootstepClips.Length - 1)]);
+                        break;
+                    case "Footsteps/Metal":
+                        footstepAudioSource.PlayOneShot(metalFootstepClips[Random.Range(0, metalFootstepClips.Length - 1)]);
+                        break;
+                    case "Footsteps/Grass":
+                        footstepAudioSource.PlayOneShot(grassFootstepClips[Random.Range(0, grassFootstepClips.Length - 1)]);
+                        break;
+                    default:
+                        footstepAudioSource.PlayOneShot(woodFootstepClips[Random.Range(0, woodFootstepClips.Length - 1)]);
+                        break;
+                }
+            }
+
+            footstepTimer = GetCurrentOffset;
+
+        }
+
+    }
 
     private void ApplyFinalMovement()
     {
