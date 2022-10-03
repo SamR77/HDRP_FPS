@@ -11,19 +11,23 @@ public class FirstPersonController_Sam : MonoBehaviour
     private bool shouldJump => Input.GetKeyDown(jumpKey) && characterController.isGrounded;
     private bool shouldCrouch => Input.GetKeyDown(crouchKey) && !duringCrouchAnimation && characterController.isGrounded;
 
-    [Header("Functional Options")]
+    #region Settings
+
+    [Header("Functional Settings")]
     [SerializeField] private bool canRun = true;
     [SerializeField] private bool canJump = true;
     [SerializeField] private bool canCrouch = true;
     [SerializeField] private bool canUseHeadbob = true;
     [SerializeField] private bool canSlideOnSlopes = true;
     [SerializeField] private bool canZoom = true;
+    [SerializeField] private bool canInteract = true;
 
     [Header("Controls")]
     [SerializeField] private KeyCode runKey = KeyCode.LeftShift;
     [SerializeField] private KeyCode jumpKey = KeyCode.Space;
     [SerializeField] private KeyCode crouchKey = KeyCode.LeftControl;
     [SerializeField] private KeyCode zoomKey = KeyCode.Mouse1;
+    [SerializeField] private KeyCode interactKey = KeyCode.Mouse0;
 
     [Header("Move Settings")]
     [SerializeField] private float walkSpeed = 5.0f;
@@ -91,6 +95,14 @@ public class FirstPersonController_Sam : MonoBehaviour
         }
     }
 
+    [Header("Interaction Settings")]
+    [SerializeField] private Vector3 interactionRayPoint = new Vector3(0.5f, 0.5f, 0);
+    [SerializeField] private float interactionDistance = 2.0f;
+    [SerializeField] private LayerMask interactionLayer = default;
+    private Interactable currentInteractable;
+
+    #endregion
+
     private Camera playerCamera;
     private CharacterController characterController;
 
@@ -104,7 +116,8 @@ public class FirstPersonController_Sam : MonoBehaviour
         playerCamera = GetComponentInChildren<Camera>();
         characterController = GetComponent<CharacterController>();
         defaultYPos = playerCamera.transform.localPosition.y;
-        defaultFOV = playerCamera.fieldOfView;
+        defaultFOV = playerCamera.fieldOfView;        
+
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -117,10 +130,11 @@ public class FirstPersonController_Sam : MonoBehaviour
             HandleMovementInput();
             HandleMouseLook(); // look into moving into Lateupdate if motion is jittery
 
-            if (canJump) { HandleJump(); }
-            if (canCrouch) { HandleCrouch(); }
-            if (canUseHeadbob) { HandleHeadBob(); }
-            if (canZoom) { HandleZoom(); }
+            if (canJump)        { HandleJump();     }
+            if (canCrouch)      { HandleCrouch();   }
+            if (canUseHeadbob)  { HandleHeadBob();  }
+            if (canZoom)        { HandleZoom();     }
+            if (canInteract)    { HandleInteractionCheck(); HandleInteractionInput(); }
 
             ApplyFinalMovement();
         }
@@ -214,7 +228,37 @@ public class FirstPersonController_Sam : MonoBehaviour
         }
     }
 
-private void ApplyFinalMovement()
+    private void HandleInteractionCheck()
+    {
+        if (Physics.Raycast(playerCamera.ViewportPointToRay(interactionRayPoint), out RaycastHit hit, interactionDistance))
+        {
+            if (hit.collider.gameObject.layer == 7 && (currentInteractable == null || hit.collider.gameObject.GetInstanceID() != currentInteractable.GetInstanceID() ) )
+            {
+                hit.collider.TryGetComponent(out currentInteractable);
+
+                if (currentInteractable)
+                {
+                    currentInteractable.OnFocus();
+                }
+            }
+        }
+        else if (currentInteractable)
+        {
+            currentInteractable.OnLoseFocus();
+            currentInteractable = null; 
+        }
+    }
+
+    private void HandleInteractionInput()
+    {
+        if (Input.GetKeyDown(interactKey) && currentInteractable != null && Physics.Raycast(playerCamera.ViewportPointToRay(interactionRayPoint), out RaycastHit hit, interactionDistance, interactionLayer))
+        {            
+            currentInteractable.OnInteract();
+        }
+    }
+
+
+    private void ApplyFinalMovement()
     {
         // Apply gravity if the character controller is not grounded
         if (!characterController.isGrounded)
