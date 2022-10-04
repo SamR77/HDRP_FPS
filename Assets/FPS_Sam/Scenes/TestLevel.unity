@@ -2606,6 +2606,7 @@ GameObject:
   - component: {fileID: 250372724}
   - component: {fileID: 250372723}
   - component: {fileID: 250372722}
+  - component: {fileID: 250372729}
   m_Layer: 7
   m_Name: Interact_Test 02
   m_TagString: Untagged
@@ -2625,6 +2626,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44df681496d753c42a7d550328403f5d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _outline: {fileID: 0}
 --- !u!64 &250372723
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -2948,6 +2950,24 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &250372729
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 250372721}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  outlineMode: 0
+  outlineColor: {r: 1, g: 0.47058824, b: 0, a: 1}
+  outlineWidth: 10
+  precomputeOutline: 0
+  bakeKeys: []
+  bakeValues: []
 --- !u!43 &442569487
 Mesh:
   m_ObjectHideFlags: 0
@@ -3799,6 +3819,7 @@ GameObject:
   - component: {fileID: 658021589}
   - component: {fileID: 658021588}
   - component: {fileID: 658021587}
+  - component: {fileID: 658021594}
   m_Layer: 0
   m_Name: QuickOutline_Test
   m_TagString: Untagged
@@ -3813,14 +3834,14 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 658021586}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   outlineMode: 0
-  outlineColor: {r: 1, g: 0.46342522, b: 0, a: 1}
-  outlineWidth: 10
+  outlineColor: {r: 1, g: 0.49019608, b: 0, a: 1}
+  outlineWidth: 20
   precomputeOutline: 0
   bakeKeys: []
   bakeValues: []
@@ -3866,7 +3887,7 @@ MeshRenderer:
   m_RenderingLayerMask: 257
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: c22777d6e868e4f2fb421913386b154e, type: 2}
+  - {fileID: 2100000, guid: 1cfb3bb8237a75a47bf90783cf86da0e, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -4147,6 +4168,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &658021594
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 658021586}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44df681496d753c42a7d550328403f5d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _outline: {fileID: 0}
 --- !u!1 &665952268
 GameObject:
   m_ObjectHideFlags: 0
@@ -6191,7 +6225,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh30018
+  m_Name: pb_Mesh59908
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -6355,7 +6389,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh36852
+  m_Name: pb_Mesh60012
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -6692,6 +6726,7 @@ GameObject:
   - component: {fileID: 1299489525}
   - component: {fileID: 1299489524}
   - component: {fileID: 1299489523}
+  - component: {fileID: 1299489530}
   m_Layer: 7
   m_Name: Interact_Test
   m_TagString: Untagged
@@ -6711,6 +6746,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44df681496d753c42a7d550328403f5d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _outline: {fileID: 0}
 --- !u!64 &1299489524
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -7027,13 +7063,31 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1299489522}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 2, y: -1, z: 6}
+  m_LocalPosition: {x: 3.43, y: -1, z: 6}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1299489530
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1299489522}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  outlineMode: 0
+  outlineColor: {r: 1, g: 0.47058824, b: 0, a: 1}
+  outlineWidth: 10
+  precomputeOutline: 0
+  bakeKeys: []
+  bakeValues: []
 --- !u!850595691 &1307938698
 LightingSettings:
   m_ObjectHideFlags: 0
@@ -7480,7 +7534,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh36728
+  m_Name: pb_Mesh59888
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -8072,7 +8126,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh36764
+  m_Name: pb_Mesh59924
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -8605,7 +8659,7 @@ MonoBehaviour:
   walkSpeed: 5
   runSpeed: 10
   crouchSpeed: 2.5
-  slopeSpeeed: 8
+  slopeSpeeed: 12
   lookSpeedX: 2
   lookSpeedY: 2
   upperLookLimit: 70

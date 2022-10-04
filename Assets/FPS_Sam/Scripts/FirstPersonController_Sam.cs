@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// Created by Sam Robichaud NSCC-Truro, Based on tutorialby (Comp - 3 Interactive)  * with modifications *
+// Created by Sam Robichaud NSCC-Truro, Based on tutorial by (Comp - 3 Interactive)  * with modifications *
 
 public class FirstPersonController_Sam : MonoBehaviour
 {
@@ -34,7 +34,7 @@ public class FirstPersonController_Sam : MonoBehaviour
     [SerializeField] private float walkSpeed = 5.0f;
     [SerializeField] private float runSpeed = 10.0f;
     [SerializeField] private float crouchSpeed = 2.5f;
-    [SerializeField] private float slopeSpeeed = 8f;
+    [SerializeField] private float slopeSpeeed = 12f;
 
     [Header("Look Settings")]
     [SerializeField, Range(1, 10)] private float lookSpeedX = 2.0f;
@@ -110,7 +110,7 @@ public class FirstPersonController_Sam : MonoBehaviour
     [Header("Interaction Settings")]
     [SerializeField] private Vector3 interactionRayPoint = new Vector3(0.5f, 0.5f, 0);
     [SerializeField] private float interactionDistance = 2.0f;
-    [SerializeField] private LayerMask interactionLayer = default;
+    [SerializeField] private LayerMask interactionLayer = 7;
     private Interactable currentInteractable;
 
     #endregion
@@ -181,7 +181,6 @@ public class FirstPersonController_Sam : MonoBehaviour
         rotationX -= Input.GetAxis("Mouse Y") * lookSpeedY;
         rotationX = Mathf.Clamp(rotationX, lowerLookLimit, upperLookLimit);
         playerCamera.transform.localRotation = Quaternion.Euler(rotationX, 0, 0);
-
 
         // Rotate player left/right
         transform.rotation *= Quaternion.Euler(0, Input.GetAxis("Mouse X") * lookSpeedX, 0);
@@ -264,6 +263,9 @@ public class FirstPersonController_Sam : MonoBehaviour
 
     private void HandleInteractionInput()
     {
+        // TODO: Research TAG vs Layermask, at the moment it seems like using a tag as verificatin is going to work better
+
+
         if (Input.GetKeyDown(interactKey) && currentInteractable != null && Physics.Raycast(playerCamera.ViewportPointToRay(interactionRayPoint), out RaycastHit hit, interactionDistance, interactionLayer))
         {            
             currentInteractable.OnInteract();
@@ -276,15 +278,13 @@ public class FirstPersonController_Sam : MonoBehaviour
         if (currentInput == Vector2.zero) return;
 
         footstepTimer -= Time.deltaTime;
-
-        
+              
 
         if (footstepTimer <= 0)
         {
             if (Physics.Raycast(this.transform.position, Vector3.down, out RaycastHit hit, 3))
             {
-                Debug.Log(hit.collider.tag);
-
+                
 
                 switch (hit.collider.tag)
                 {
@@ -298,7 +298,7 @@ public class FirstPersonController_Sam : MonoBehaviour
                         footstepAudioSource.PlayOneShot(grassFootstepClips[Random.Range(0, grassFootstepClips.Length - 1)]);
                         break;
                     default:
-                        footstepAudioSource.PlayOneShot(woodFootstepClips[Random.Range(0, woodFootstepClips.Length - 1)]);
+                        footstepAudioSource.PlayOneShot(metalFootstepClips[Random.Range(0, metalFootstepClips.Length - 1)]);
                         break;
                 }
             }
