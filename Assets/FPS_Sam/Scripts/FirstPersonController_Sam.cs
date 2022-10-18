@@ -31,7 +31,7 @@ public class FirstPersonController_Sam : MonoBehaviour
     [SerializeField] private KeyCode interactKey = KeyCode.Mouse0;
 
     [Header("Move Settings")]
-    [SerializeField] private float walkSpeed = 5.0f;
+    [SerializeField] private float walkSpeed = 4.0f;
     [SerializeField] private float runSpeed = 10.0f;
     [SerializeField] private float crouchSpeed = 2.5f;
     [SerializeField] private float slopeSpeeed = 12f;
@@ -58,7 +58,7 @@ public class FirstPersonController_Sam : MonoBehaviour
     [Header("Headbob Settings")]
     [SerializeField] private float crouchBobSpeed = 8f;
     [SerializeField] private float crouchBobAmount = 0.05f;
-    [SerializeField] private float walkBobSpeed = 12f;
+    [SerializeField] private float walkBobSpeed = 11.1f;
     [SerializeField] private float walkBobAmount = 0.065f;
     [SerializeField] private float runBobSpeed = 16f;
     [SerializeField] private float runBobAmount = 0.1f;
@@ -72,7 +72,7 @@ public class FirstPersonController_Sam : MonoBehaviour
     private Coroutine zoomRoutine;
 
     [Header("Footstep Settings")]
-    [SerializeField] private float baseStepSpeed = 0.5f;
+    [SerializeField] private float baseStepSpeed = 0.55f;
     [SerializeField] private float crouchStepMultiplier = 1.5f;
     [SerializeField] private float RunStepMultiplier = 0.6f;
     [SerializeField] private AudioSource footstepAudioSource = default;
