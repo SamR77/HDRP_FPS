@@ -2,7 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// Created by Sam Robichaud NSCC-Truro, Based on tutorial by (Comp - 3 Interactive)  * with modifications *
+// Sam Robichaud 2022
+// NSCC-Truro
+// Based on tutorial by (Comp - 3 Interactive)  * with modifications *
 
 public class FirstPersonController_Sam : MonoBehaviour
 {
@@ -205,6 +207,8 @@ public class FirstPersonController_Sam : MonoBehaviour
 
     private void HandleHeadBob()
     {
+        // TODO: find a better headbob system that feels more natural.
+        
         if (!characterController.isGrounded) return;
 
         if (Mathf.Abs(moveDirection.x) > 0.1f || Mathf.Abs(moveDirection.z) > 0.1f)
@@ -264,6 +268,7 @@ public class FirstPersonController_Sam : MonoBehaviour
     private void HandleInteractionInput()
     {
         // TODO: Research TAG vs Layermask, at the moment it seems like using a tag as verificatin is going to work better
+        // potential option for replacement; https://www.youtube.com/watch?v=5MbR2qJK8Tc
 
 
         if (Input.GetKeyDown(interactKey) && currentInteractable != null && Physics.Raycast(playerCamera.ViewportPointToRay(interactionRayPoint), out RaycastHit hit, interactionDistance, interactionLayer))
